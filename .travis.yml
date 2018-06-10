@@ -1,0 +1,15 @@
+sudo: required
+
+language: minimal
+
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: lint
+      script: docker run --rm -ti -v `pwd`:/git quay.io/hairmare/fedora_rpmdev rpmlint ocaml-magic.spec
+    - stage: build
+      script: docker run --rm -ti -v `pwd`:/git quay.io/hairmare/centos_rpmdev bash -c 'chown root.root ocaml-magic.spec && build-rpm-package.sh ocaml-magic.spec'
+    - stage: build
+      script: docker run --rm -ti -v `pwd`:/git quay.io/hairmare/fedora_rpmdev build-rpm-package.sh ocaml-magic.spec
